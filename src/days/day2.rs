@@ -16,18 +16,18 @@ fn choice_points(ch: &Choice) -> i64 {
     }
 }
 
-pub struct ChoiceParseError {
+pub struct ParseError {
     msg: String
 }
 
-impl fmt::Display for ChoiceParseError {
+impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.msg)
     }
 }
 
 impl FromStr for Choice {
-    type Err = ChoiceParseError;
+    type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let ls = s.trim().to_uppercase().to_string();
@@ -38,11 +38,26 @@ impl FromStr for Choice {
             "B" => Ok(Choice::Paper),
             "C" => Ok(Choice::Scissors),
             "Z" => Ok(Choice::Scissors),
-            _ => Err(ChoiceParseError{msg: format!("unsupported value: {}", s)})
+            _ => Err(ParseError {msg: format!("unsupported value: {}", s)})
         }
     }
 }
 
+impl FromStr for GameResult {
+    type Err = ParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let ls = s.trim().to_uppercase().to_string();
+        match ls.as_str() {
+            "X" => Ok(GameResult::Lost),
+            "Y" => Ok(GameResult::Draw),
+            "Z" => Ok(GameResult::Win),
+            _ => Err(ParseError {msg: format!("unsupported value: {}", s)})
+        }
+    }
+}
+
+#[derive(Debug, PartialEq)]
 pub enum GameResult {
     Lost,
     Draw,
@@ -93,6 +108,48 @@ pub fn score(path: &str) -> String {
         };
 
         sum += choice_points(&right) + result_points(&result(&left, &right))
+    }
+
+    return sum.to_string();
+}
+
+fn choice(left: Choice, res: &GameResult) -> Choice {
+    if *res == GameResult::Draw {
+        return left
+    }
+    match left {
+        Choice::Rock => if *res == GameResult::Win {Choice::Paper} else {Choice::Scissors},
+        Choice::Paper => if *res == GameResult::Win {Choice::Scissors} else {Choice::Rock},
+        Choice::Scissors => if *res == GameResult::Win {Choice::Rock} else {Choice::Paper},
+    }
+}
+
+pub fn score_strategy(path: &str) -> String {
+    let input = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => return format!("Fail - {}", e)
+    };
+    let strings = input.split("\n");
+    let mut sum: i64 = 0;
+    for (i, s) in strings.enumerate() {
+        if s.trim() == "" {
+            continue
+        }
+        let chs: Vec<&str> = s.split(" ").collect();
+        if chs.len() != 2 {
+            return format!("Parse failed. Line: {}. Value: {}", i, s)
+        }
+        let left: Choice = match chs[0].parse() {
+            Ok(ch) => ch,
+            Err(e) => return format!("Parse failed. Line: {}. Value: {}. {}", i, s, e)
+        };
+        let expect_result: GameResult = match chs[1].parse() {
+            Ok(gr) => gr,
+            Err(e) => return format!("Parse failed. Line: {}. Value: {}. {}", i, s, e)
+        };
+        let right = choice(left, &expect_result);
+
+        sum += choice_points(&right) + result_points(&expect_result)
     }
 
     return sum.to_string();
