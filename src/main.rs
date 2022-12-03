@@ -13,11 +13,15 @@ fn day2() {
     println!("Day 2: Strategy score - {}", days::day2::score_strategy("./inputs/day2.txt"));
 }
 
+fn day3() {
+    println!("Day 3: Sum - {}", days::day3::sum_priorities("./inputs/day3.txt"));
+}
 
 fn main() {
     let days_list: Vec<fn()> = vec![
         day1,
-        day2
+        day2,
+        day3
     ];
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
