@@ -1,8 +1,39 @@
 mod days;
 
-fn main() {
+use std::env;
+use std::process::exit;
+
+fn day1() {
     println!("Day 1: Max calories - {}", days::day1::max_calories("./inputs/day1.txt"));
     println!("Day 1: Top 3 calories - {}", days::day1::top_3("./inputs/day1.txt"));
+}
+
+fn day2() {
     println!("Day 2: Score - {}", days::day2::score("./inputs/day2.txt"));
     println!("Day 2: Strategy score - {}", days::day2::score_strategy("./inputs/day2.txt"));
+}
+
+
+fn main() {
+    let days_list: Vec<fn()> = vec![
+        day1,
+        day2
+    ];
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 2 {
+        println!("Wrong arguments number");
+        exit(1)
+    }
+    let day: usize = match args[1].parse() {
+        Ok(d) => d,
+        Err(e) => {
+            println!("Invalid day number: {}", e);
+            exit(1)
+        }
+    };
+    if (day == 0) || (day - 1 >= days_list.len()) {
+        println!("No such day: {}", day);
+        exit(1)
+    };
+    days_list[day - 1]()
 }
