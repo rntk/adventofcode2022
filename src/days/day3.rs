@@ -53,3 +53,43 @@ pub fn sum_priorities(path: &str) -> String {
 
     return sum.to_string()
 }
+
+pub fn sum_groups_priorities(path: &str) -> String {
+    let input = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => return format!("Fail - {}", e)
+    };
+    let strings = input.split("\n");
+    let mut sum: i64 = 0;
+    let mut group_chars  = HashMap::new();
+    for (line, s) in strings.enumerate() {
+        if s.trim() == "" {
+            continue;
+        }
+        for ch in s.as_bytes().iter() {
+            if group_chars.contains_key(ch) {
+                let (prev_line, counter): (usize, i64) = *group_chars.get(ch).unwrap();
+                if prev_line == line {
+                    continue
+                }
+                group_chars.insert(ch, (line, counter + 1));
+                continue;
+            }
+            group_chars.insert(ch, (line, 1));
+        }
+        if (line + 1) % 3 == 0 {
+            for (ch, (_, counter)) in group_chars.iter() {
+                if *counter == 3 as i64 {
+                    let prior = match char_to_priority(ch) {
+                        Some(p) => p,
+                        None => return format!("unupported type: Char - {}", ch)
+                    };
+                    sum += prior as i64
+                }
+            }
+            group_chars.clear();
+        }
+    }
+
+    return sum.to_string()
+}

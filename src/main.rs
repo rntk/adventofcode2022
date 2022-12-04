@@ -15,6 +15,7 @@ fn day2() {
 
 fn day3() {
     println!("Day 3: Sum - {}", days::day3::sum_priorities("./inputs/day3.txt"));
+    println!("Day 3: Sum groups- {}", days::day3::sum_groups_priorities("./inputs/day3.txt"));
 }
 
 fn main() {
