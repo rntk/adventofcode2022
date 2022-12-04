@@ -36,6 +36,17 @@ impl Range {
 
         return true
     }
+
+    pub fn overlap(&self, r: &Range) -> bool {
+        if self.start >= r.start && self.start <= r.end {
+            return true
+        }
+        if self.end >= r.start && self.end <= r.end {
+            return true
+        }
+
+        return false
+    }
 }
 
 pub fn count_ranges(path: &str) -> String {
@@ -62,6 +73,37 @@ pub fn count_ranges(path: &str) -> String {
             Err(e) => return format!("Right range parse error: {} - {} - {}", line, s, e)
         };
         if r1.contains(&r2) || r2.contains(&r1) {
+            sum += 1;
+        }
+    }
+
+    return sum.to_string()
+}
+
+pub fn count_overlapped_ranges(path: &str) -> String {
+    let input = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => return format!("Fail - {}", e)
+    };
+    let strings = input.split("\n");
+    let mut sum: i64 = 0;
+    for (line, s) in strings.enumerate() {
+        if s.trim() == "" {
+            continue;
+        }
+        let ranges: Vec<&str> = s.split(",").collect();
+        if ranges.len() != 2 {
+            return format!("Invalid: {} - {}", line, s)
+        }
+        let r1: Range = match ranges[0].parse() {
+            Ok(r) => r,
+            Err(e) => return format!("Left range parse error: {} - {} - {}", line, s, e)
+        };
+        let r2: Range = match ranges[1].parse() {
+            Ok(r) => r,
+            Err(e) => return format!("Right range parse error: {} - {} - {}", line, s, e)
+        };
+        if r1.overlap(&r2) || r2.overlap(&r1) {
             sum += 1;
         }
     }

@@ -20,6 +20,7 @@ fn day3() {
 
 fn day4() {
     println!("Day 4: Ranges - {}", days::day4::count_ranges("./inputs/day4.txt"));
+    println!("Day 4: Overlapped ranges - {}", days::day4::count_overlapped_ranges("./inputs/day4.txt"));
 }
 
 fn main() {
