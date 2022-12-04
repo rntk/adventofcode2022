@@ -18,11 +18,16 @@ fn day3() {
     println!("Day 3: Sum groups- {}", days::day3::sum_groups_priorities("./inputs/day3.txt"));
 }
 
+fn day4() {
+    println!("Day 4: Ranges - {}", days::day4::count_ranges("./inputs/day4.txt"));
+}
+
 fn main() {
     let days_list: Vec<fn()> = vec![
         day1,
         day2,
-        day3
+        day3,
+        day4
     ];
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {

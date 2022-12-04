@@ -1,4 +1,5 @@
 use std::{fs, fmt};
+use std::num::ParseIntError;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq)]
@@ -17,7 +18,7 @@ fn choice_points(ch: &Choice) -> i64 {
 }
 
 pub struct ParseError {
-    msg: String
+    pub msg: String
 }
 
 impl fmt::Display for ParseError {
@@ -39,6 +40,14 @@ impl FromStr for Choice {
             "C" => Ok(Choice::Scissors),
             "Z" => Ok(Choice::Scissors),
             _ => Err(ParseError {msg: format!("unsupported value: {}", s)})
+        }
+    }
+}
+
+impl From<ParseIntError> for ParseError {
+    fn from(e: ParseIntError) -> Self {
+        ParseError {
+            msg: format!("Int parse error: {}", e),
         }
     }
 }
