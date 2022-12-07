@@ -23,12 +23,17 @@ fn day4() {
     println!("Day 4: Overlapped ranges - {}", days::day4::count_overlapped_ranges("./inputs/day4.txt"));
 }
 
+fn day5() {
+    println!("Day 4: Letters - {}", days::day5::letters("./inputs/day5.txt"));
+}
+
 fn main() {
     let days_list: Vec<fn()> = vec![
         day1,
         day2,
         day3,
-        day4
+        day4,
+        day5
     ];
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
