@@ -29,7 +29,8 @@ fn day5() {
 }
 
 fn day6() {
-    println!("Day 6: Letters - {}", days::day6::number("./inputs/day6.txt"));
+    println!("Day 6: Mark - {}", days::day6::number("./inputs/day6.txt"));
+    println!("Day 6: Message - {}", days::day6::number_message("./inputs/day6.txt"));
 }
 
 fn main() {
