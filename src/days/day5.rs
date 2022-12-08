@@ -32,6 +32,34 @@ pub fn letters(path: &str) -> String {
     return crates.top()
 }
 
+pub fn letters_order(path: &str) -> String {
+    let input = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => return format!("Fail - {}", e)
+    };
+    let strings = input.split("\n");
+    let mut crates = Crates::new();
+    for (i, s) in strings.enumerate() {
+        let ts = s.trim();
+        if ts == "" {
+            continue
+        }
+        if ts.to_lowercase().starts_with("move") {
+            if let Err(e) = crates.move_crate_order(s) {
+                return format!("Invalid row: {} - {} - {}", i, s, e)
+            }
+        } else if ts.starts_with("1") {
+            continue
+        } else {
+            if  let Err(e) = crates.add_crates(s) {
+                return format!("Invalid row: {} - {} - {}", i, s, e)
+            }
+        }
+    }
+
+    return crates.top()
+}
+
 #[derive(Debug)]
 pub struct Crates {
     crates: Vec<Vec<char>>
@@ -83,6 +111,28 @@ impl Crates {
         for _ in 0..mv.number {
             let ch = self.crates[from][0];
             self.crates[from].remove(0);
+            self.crates[to].insert(0, ch);
+        }
+
+        return Ok(())
+    }
+
+    pub fn move_crate_order(&mut self, s: &str) -> Result<(), MoveError> {
+        let mv: Movement = s.parse()?;
+        let from = (mv.from - 1) as usize;
+        if self.crates.len() <= from {
+            return Err(MoveError{msg: format!("Invalid from: {}", mv.from)})
+        }
+        if self.crates[from].len() < mv.number as usize {
+            return Err(MoveError{msg: format!("Invalid number: {}", mv.number)})
+        }
+        let to = (mv.to - 1) as usize;
+        if self.crates.len() <= to {
+            return Err(MoveError{msg: format!("Invalid to: {}", mv.to)})
+        }
+        for i in (0..mv.number).rev() {
+            let ch = self.crates[from][i as usize];
+            self.crates[from].remove(i as usize);
             self.crates[to].insert(0, ch);
         }
 

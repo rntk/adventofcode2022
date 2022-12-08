@@ -25,6 +25,7 @@ fn day4() {
 
 fn day5() {
     println!("Day 4: Letters - {}", days::day5::letters("./inputs/day5.txt"));
+    println!("Day 4: Letters ordered- {}", days::day5::letters_order("./inputs/day5.txt"));
 }
 
 fn main() {
