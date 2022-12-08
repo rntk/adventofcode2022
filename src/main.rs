@@ -28,13 +28,18 @@ fn day5() {
     println!("Day 4: Letters ordered- {}", days::day5::letters_order("./inputs/day5.txt"));
 }
 
+fn day6() {
+    println!("Day 6: Letters - {}", days::day6::number("./inputs/day6.txt"));
+}
+
 fn main() {
     let days_list: Vec<fn()> = vec![
         day1,
         day2,
         day3,
         day4,
-        day5
+        day5,
+        day6
     ];
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
