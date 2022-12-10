@@ -33,6 +33,10 @@ fn day6() {
     println!("Day 6: Message - {}", days::day6::number_message("./inputs/day6.txt"));
 }
 
+fn day7() {
+    println!("Day 7: Size- {}", days::day7::size("./inputs/day7.txt"));
+}
+
 fn main() {
     let days_list: Vec<fn()> = vec![
         day1,
@@ -40,7 +44,8 @@ fn main() {
         day3,
         day4,
         day5,
-        day6
+        day6,
+        day7
     ];
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
