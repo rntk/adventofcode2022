@@ -40,6 +40,7 @@ fn day7() {
 
 fn day8() {
     println!("Day 8: Visible - {}", days::day8::visible("./inputs/day8.txt"));
+    println!("Day 8: Score- {}", days::day8::score("./inputs/day8.txt"));
 }
 
 fn main() {
