@@ -9,10 +9,42 @@ pub fn size(path: &str) -> String {
         Ok(text) => text,
         Err(e) => return format!("Fail - {}", e)
     };
-    let strings = input.split("\n");
+    let dirs = match build_fs(input) {
+        Ok(drs) => drs,
+        Err(e) => return format!("Fs error: {}", e)
+    };
+
+    let (_, sum) = sum_dirs(&dirs, 0);
+
+    return sum.to_string()
+}
+
+pub fn size_deleted(path: &str) -> String {
+    let input = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => return format!("Fail - {}", e)
+    };
+    let dirs = match build_fs(input) {
+        Ok(drs) => drs,
+        Err(e) => return format!("Fs error: {}", e)
+    };
+
+    let (current_size, _) = sum_dirs(&dirs, 0);
+    let total_storage = 70000000;
+    let required = 30000000;
+    let to_free = required - (total_storage - current_size);
+    let(_, deleted_size) = sizes(&dirs, 0, to_free as i64);
+
+    return match deleted_size {
+        Some(s) => s.to_string(),
+        None => "Not found".to_string()
+    }
+}
+
+fn build_fs(strings: String) -> Result<Vec<Directory>, ParseError> {
     let mut dirs = vec![Directory::new("/", None)];
     let mut current_dir = 0;
-    for (i, s) in strings.enumerate() {
+    for (i, s) in strings.split("\n").enumerate() {
         let st = s.trim();
         if st == "" {
             continue
@@ -20,21 +52,21 @@ pub fn size(path: &str) -> String {
         if st.starts_with("$ ") {
             let cmd: Command = match st.parse() {
                 Ok(c) => c,
-                Err(e) => return format!("Line {}. {}. {}", i, s, e)
+                Err(e) => return Err(ParseError{msg: format!("Line {}. {}. {}", i, s, e)})
             };
             match cmd {
                 Command::CD(dir) => {
                     if dir == ".." {
                         current_dir = match dirs[current_dir].parent {
                             Some(cd) => cd,
-                            None => return format!("No parent dir. line: {}. {}", i, s)
+                            None => return Err(ParseError{msg: format!("No parent dir. line: {}. {}", i, s)})
                         }
                     } else if dir == "/" {
                         current_dir = 0
                     } else {
                         current_dir = match dirs[current_dir].dirs.get(&dir) {
                             Some(d) => *d,
-                            None => return format!("No found dir. line: {}. {}", i, s)
+                            None => return Err(ParseError{msg: format!("No found dir. line: {}. {}", i, s)})
                         }
                     }
                 },
@@ -54,14 +86,13 @@ pub fn size(path: &str) -> String {
         } else {
             let f: File = match s.parse() {
                 Ok(fl) => fl,
-                Err(e) => return format!("File parsing: Line: {}. {}. {}", i, i, e)
+                Err(e) => return Err(ParseError{msg: format!("File parsing: Line: {}. {}. {}", i, i, e)})
             };
             dirs[current_dir].files.push(f)
         }
     }
-    let (_, sum) = sum_dirs(&dirs, 0);
 
-    return sum.to_string()
+    return Ok(dirs)
 }
 
 enum Command {
@@ -164,4 +195,34 @@ fn sum_dirs(dirs: &Vec<Directory>, current_dir: usize) -> (u64, u64) {
     }
 
     return (directory_size, dirs_sum)
+}
+
+fn sizes(dirs: &Vec<Directory>, current_dir: usize, to_free: i64) -> (u64, Option<u64>) {
+    let files_size = dirs[current_dir].files_size();
+    if dirs[current_dir].dirs.len() == 0 {
+        if to_free - files_size as i64 > 0 {
+            return (files_size, None)
+        }
+
+        return (files_size, Some(files_size))
+    }
+    let mut dir_size = files_size;
+    let mut sub_mins: Vec<u64> = vec![];
+    for (_, d ) in &dirs[current_dir].dirs {
+        let (subd_size, subd_min) = sizes(dirs, *d, to_free);
+        dir_size += subd_size;
+        if let Some(min) = subd_min {
+            sub_mins.push(min)
+        }
+    }
+    if to_free - dir_size as i64 <= 0 {
+        sub_mins.push(dir_size);
+    }
+    if sub_mins.len() > 0 {
+        sub_mins.sort();
+
+        return (dir_size, Some(sub_mins[0]))
+    }
+
+    return (dir_size, None)
 }

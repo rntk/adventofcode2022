@@ -34,7 +34,8 @@ fn day6() {
 }
 
 fn day7() {
-    println!("Day 7: Size- {}", days::day7::size("./inputs/day7.txt"));
+    println!("Day 7: Size - {}", days::day7::size("./inputs/day7.txt"));
+    println!("Day 7: Size deleted- {}", days::day7::size_deleted("./inputs/day7.txt"));
 }
 
 fn main() {
