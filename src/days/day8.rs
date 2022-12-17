@@ -129,7 +129,7 @@ fn get_score(field: &Vec<Vec<i8>>, x: usize, y : usize) -> i64 {
             break
         }
     }
-    for i in ((x + 1)..field.len()) {
+    for i in (x + 1)..field.len() {
         let h = field[i][y];
         bottom += 1;
         if h >= height {
@@ -145,7 +145,7 @@ fn get_score(field: &Vec<Vec<i8>>, x: usize, y : usize) -> i64 {
             break
         }
     }
-    for i in ((y + 1)..field[x].len()) {
+    for i in (y + 1)..field[x].len() {
         let h = field[x][i];
         right += 1;
         if h >= height {
