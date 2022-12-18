@@ -50,6 +50,7 @@ fn day9() {
 
 fn day10() {
     println!("Day 10: Signals sum - {}", days::day10::signals_sum("./inputs/day10.txt"));
+    println!("Day 10: Signals CRT - {}", days::day10::signals_crt("./inputs/day10.txt"));
 }
 
 fn main() {

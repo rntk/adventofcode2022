@@ -39,6 +39,43 @@ pub fn signals_sum(path: &str) -> String {
     return sum.to_string()
 }
 
+pub fn signals_crt(path: &str) -> String {
+    let input = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => return format!("Fail - {}", e)
+    };
+    let mut cycles = 0;
+    let mut state = 1;
+    let mut crt = 0;
+    for (line, s) in input.split("\n").enumerate() {
+        if s.trim() == "" {
+            continue
+        }
+        let instr: Instruction = match s.parse() {
+            Ok(ins) => ins,
+            Err(e) => return format!("Invalid: {} {}. {}", line, s, e)
+        };
+        for _ in 0..instr.cycles() {
+            cycles += 1;
+            if (crt == (state - 1)) || (crt == state) || (crt == (state + 1)) {
+                print!("#");
+            } else {
+                print!(".");
+            }
+            crt += 1;
+            if cycles % 40 == 0 {
+                println!("");
+                crt = 0;
+            }
+        }
+        if let Instruction::AddX(v) = instr {
+            state += v
+        }
+    }
+
+    return "on stdout".to_string()
+}
+
 enum Instruction {
     Noop,
     AddX(i32)
