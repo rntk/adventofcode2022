@@ -48,6 +48,10 @@ fn day9() {
     println!("Day 9: Positions1 - {}", days::day9::positions1("./inputs/day9.txt"));
 }
 
+fn day10() {
+    println!("Day 10: Signals sum - {}", days::day10::signals_sum("./inputs/day10.txt"));
+}
+
 fn main() {
     let days_list: Vec<fn()> = vec![
         day1,
@@ -58,7 +62,8 @@ fn main() {
         day6,
         day7,
         day8,
-        day9
+        day9,
+        day10
     ];
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
