@@ -45,6 +45,7 @@ fn day8() {
 
 fn day9() {
     println!("Day 9: Positions - {}", days::day9::positions("./inputs/day9.txt"));
+    println!("Day 9: Positions1 - {}", days::day9::positions1("./inputs/day9.txt"));
 }
 
 fn main() {
