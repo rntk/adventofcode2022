@@ -144,7 +144,7 @@ impl Rope1 {
             }
         }
     }
-    fn print(&self) {
+    /*fn print(&self) {
         let delta = 12;
         let x = self.head[0] - delta;
         let y = self.head[1] - delta;
@@ -176,7 +176,7 @@ impl Rope1 {
             println!("")
         }
         println!("")
-    }
+    }*/
 }
 
 enum Move {
