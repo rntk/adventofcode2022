@@ -53,6 +53,10 @@ fn day10() {
     println!("Day 10: Signals CRT - {}", days::day10::signals_crt("./inputs/day10.txt"));
 }
 
+fn day11() {
+    println!("Day 10: Level - {}", days::day11::level("./inputs/day11.txt"));
+}
+
 fn main() {
     let days_list: Vec<fn()> = vec![
         day1,
@@ -64,7 +68,8 @@ fn main() {
         day7,
         day8,
         day9,
-        day10
+        day10,
+        day11
     ];
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
