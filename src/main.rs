@@ -54,7 +54,8 @@ fn day10() {
 }
 
 fn day11() {
-    println!("Day 10: Level - {}", days::day11::level("./inputs/day11.txt"));
+    println!("Day 11: Level - {}", days::day11::level("./inputs/day11.txt"));
+    println!("Day 11: Level1 - {}", days::day11::level1("./inputs/day11.txt"));
 }
 
 fn main() {
