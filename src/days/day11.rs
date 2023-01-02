@@ -124,6 +124,7 @@ pub fn level1(path: &str) -> String {
     }
     monkeys.push(monkey);
     let mut new_div = 1;
+    // hint from other participants
     for m in &monkeys {
         new_div *= m.test;
     }
@@ -156,7 +157,7 @@ pub fn level1(path: &str) -> String {
                     }
                 }
             }
-            monkeys[i].inspects_n += monkeys[i].items.len() as u32;
+            monkeys[i].inspects_n += monkeys[i].items.len() as u64;
             monkeys[i].items.clear();
         }
     }
@@ -282,7 +283,7 @@ struct Monkey1 {
     test: i128,
     monkeys: Vec<(bool, usize)>,
     new_level: NewLevel,
-    inspects_n: u32
+    inspects_n: u64
 }
 
 impl Monkey1 {
